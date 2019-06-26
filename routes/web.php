@@ -50,23 +50,30 @@ Route::middleware(['checkTime'])->group(function () {
 	Route::post('/admin/doupda','admin\add_file@doupda');
 });
 //前台登录,注册
+Route::middleware(['myshoplogin'])->group(function () {
+	Route::any('/index/list','index\add@index');
+	Route::get('/index/cart','index\add@cart');
+	Route::get('/index/cart','index\add@cart');
+	Route::get('/index/cartlist','index\add@cartlist');
+	Route::get('/index/order','index\add@order');
+	Route::get('/index/orderlist','index\add@orderlist');
+	Route::get('/index/orderdata','index\add@orderdata');
+	});
 Route::get('/index/zhuce','index\zhuce@zhuce');
 Route::any('/index/dozhuce','index\zhuce@dozhuce');
 Route::get('/index/login','index\zhuce@login');
 Route::post('/index/login_do','index\zhuce@login_do');
-Route::any('/index/list','index\add@index');
 Route::get('/index/loginout','index\zhuce@loginout');
-Route::get('/index/cart','index\add@cart');
 Route::get('/index/wishlist','index\add@wishlist');
-Route::get('/index/cart','index\add@cart');
-Route::get('/index/cartlist','index\add@cartlist');
+
+
 Route::get('/index/order','index\add@order');
 Route::get('/index/orderlist','index\add@orderlist');
 Route::get('/index/orderdata','index\add@orderdata');
 
 //支付
-Route::get('/pay','Pay\alipayController@pay');
-Route::get('/return_url','Pay\alipayController@aliReturn');
+Route::get('/pay','Pay\AliPayController@pay');
+Route::get('/return_url','Pay\AliPayController@aliReturn');
 
 
 //练习  学生增删改查

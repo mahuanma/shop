@@ -43,10 +43,11 @@ class add extends Controller
 	public function cart(Request $request)
 	{
 		$id=$request->all();
+
 		$userid=session('userid');
 		  // dd($userid);
 		$data=DB::table('zhuce')->where('id',$id)->first(); 
-		// dd($data);
+		 // dd($data);
 		 // dd(session('userid'));
 		$res=DB::table('cart')->insert([
 			'userid'=>$userid,
