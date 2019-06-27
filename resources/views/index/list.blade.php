@@ -101,7 +101,7 @@
             
                 <div class="col s6">
                     <div class="content">
-                        <img src="{{$v->goods_img}}" alt="">
+                        <img src="{{asset($v->goods_img)}}" alt="">
                         <h6><a href="">{{$v->goods_name}}</a></h6>
                         <div class="price">
                             $20 <span>${{$v->goods_price}}</span>
@@ -138,7 +138,7 @@
                @foreach($data as $k=>$v)
                 <div class="col s6">
                     <div class="content">
-                        <img src="{{$v->goods_img}}" alt="">
+                        <img src="{{asset($v->goods_img)}}" alt="">
                         <h6><a href="">{{$v->goods_name}}</a></h6>
                         <div class="price">
                             $ <span>${{$v->goods_price}}</span>

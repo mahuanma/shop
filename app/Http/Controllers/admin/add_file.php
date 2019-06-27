@@ -18,7 +18,7 @@ class add_file extends Controller
            // dd($data);         
            $path = $request->file('goods_img')->store('');
            // dd($path);
-        	$file= asset('storage'.'/'.$path);
+        	$file= 'storage'.'/'.$path;
             // dd($file);
             $res=DB::table('zhuce')->insert([
                 'goods_name'=>$data['goods_name'],

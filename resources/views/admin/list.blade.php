@@ -27,7 +27,7 @@
 												<td>{{$v->goods_price}}</td>
 												<td>{{date('Y-m-d H:i:s',$v->create_time)}}</td>
 												<td>
-													<img src="{{$v->goods_img}}" height="50">
+													<img src="{{asset($v->goods_img)}}" height="50">
 												</td>
 												<td><a href="{{url('/admin/del')}}?id={{$v->id}}">删除</a>
 													<a href="{{url('/admin/upda')}}?id={{$v->id}}">修改</a></td>
