@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="81d2bdd1-9365-4ed4-9ae4-b7212af290df" name="默认的" comment="" />
+    <list default="true" id="81d2bdd1-9365-4ed4-9ae4-b7212af290df" name="默认的" comment="">
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Pay/AliPayController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Pay/AliPayController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +266,7 @@
     <option name="totallyTimeSpent" value="8567000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />

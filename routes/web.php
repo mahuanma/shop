@@ -75,7 +75,7 @@ Route::get('/index/orderdata','index\add@orderdata');
 //支付
 Route::get('/pay','Pay\AliPayController@pay');
 Route::get('/return_url','Pay\AliPayController@aliReturn');
-Route::post('/notify_url','Pay\AliPayController@aliNotify');
+Route::get('/notify_url','Pay\AliPayController@aliNotify');
 //练习  学生增删改查
 Route::get('/student/add','student@add');
 Route::any('/student/doadd','student@doadd');

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Pay;
+namespace App\Http\Controllers\pay;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,8 +21,10 @@ class AliPayController extends Controller
         $this->app_id = '2016092900622330';
         $this->gate_way = 'https://openapi.alipaydev.com/gateway.do';
         $this->notify_url = env('APP_URL').'/notify_url';
-        $this->return_url = env('APP_URL').'/return_url';    
+        $this->return_url = env('APP_URL').'/return_url';
     }
+    
+    
     /**
      * 订单支付
      * @param $oid
@@ -30,30 +32,29 @@ class AliPayController extends Controller
     public function pay(Request $request)
     {
         
-
-        // file_put_contents(storage_path('logs/alipay.log'),"\nqqqq\n",FILE_APPEND);
+        $order_id=$request->get('order_id');
+        $pay_money=DB::table('order')->where('order_id',$order_id)->value('pay_money');
+        file_put_contents(storage_path('logs/alipay.log'),"\n有新的支付请求\n",FILE_APPEND);
         // die();
         //验证订单状态 是否已支付 是否是有效订单
-        //$order_info = OrderModel::where(['oid'=>$oid])->first()->toArray();
+        $order_info = DB::table('order')->where(['order_id'=>$order_id])->first();
         //判断订单是否已被支付
-        // if($order_info['is_pay']==1){
-        //     die("订单已支付，请勿重复支付");
-        // }
+        if($order_info->status!=1){
+            echo "<script>alert('订单已支付，请勿重复支付');history.back(-1)</script>";
+        }
         //判断订单是否已被删除
         // if($order_info['is_delete']==1){
         //     die("订单已被删除，无法支付");
         // }
-        $price=$request->input('price');
-        $oid=$request->input('oid');
-         // dd($oid);
         // $oid = time().mt_rand(1000,1111);  //订单编号
         //业务参数
         $bizcont = [
-            'subject'           => 'Lening-Order: ' .$oid,
-            'out_trade_no'      => $oid,
-            'total_amount'      => $price,
+            'subject'           => 'Lening-Order: ' .$order_id,
+            'out_trade_no'      => $order_id,
+            'total_amount'      =>  $pay_money,
             'product_code'      => 'FAST_INSTANT_TRADE_PAY',
         ];
+        // die();  
         //公共参数
         $data = [
             'app_id'   => $this->app_id,
@@ -170,10 +171,9 @@ class AliPayController extends Controller
 //        //处理订单逻辑
 //        $this->dealOrder($_GET);
     }
-    /**
-     * 支付宝异步通知
-     */
-   public function aliNotify()
+     // * 支付宝异步通知
+     // */
+    public function aliNotify()
     {
         $data = json_encode($_POST);
         $log_str = '>>>> '.date('Y-m-d H:i:s') . $data . "<<<<\n\n";
@@ -182,46 +182,33 @@ class AliPayController extends Controller
         //验签
         $res = $this->verify($_POST);
         $log_str = '>>>> ' . date('Y-m-d H:i:s');
-        if($res){
+        if($res === false){
             //记录日志 验签失败
             $log_str .= " Sign Failed!<<<<< \n\n";
-            //file_put_contents  函数是将一个字符串写入文件
             file_put_contents(storage_path('logs/alipay.log'),$log_str,FILE_APPEND);
         }else{
             $log_str .= " Sign OK!<<<<< \n\n";
             file_put_contents(storage_path('logs/alipay.log'),$log_str,FILE_APPEND);
-            //验证订单交易状态
-            if($_POST['trade_status']=='TRADE_SUCCESS'){
-                DB::connection('mysql_shop')->beginTransaction(); //开启事务
-                //更新订单状态
-                $oid = $_POST['out_trade_no'];     //商户订单号
-                $info = [
-                    'pay_time'      => strtotime($_POST['gmt_payment']), //支付时间
-                    'state'         => 2
-                ];
-                $order_result = $this->order_table->where(['oid'=>$oid])->update($info);
-                
-                // 清理购物车
-                $order_detail_info = $this->order_detail_table->where(['oid'=>$oid])->select(['goods_id'])->get()->toArray();
-                $goods_list = [];
-                foreach($order_detail_info as $v){
-                    $goods_list[] = $v['goods_id'];
-                }
-                $cart_result = $this->cart_table->whereIn('goods_id',$goods_list)->delete();
-                
-                if($cart_result && $order_result){
-                    DB::connection('mysql_shop')->commit();
-                }else{
-                    file_put_contents(storage_path('logs/alipay.log'),'订单：'.$oid."；支付失败",FILE_APPEND);
-                    DB::connection('mysql_shop')->rollBack();
-                }
-            }
         }
-        
+        //验证订单交易状态
+        if($_POST['trade_status']=='TRADE_SUCCESS'){
+            //更新订单状态
+            $oid = $_POST['out_trade_no'];     //商户订单号
+            $info = [
+                'status'        => 2,       //支付状态  1未支付 2已支付
+                'pay_money'    => $_POST['total_amount'],    //支付金额
+                'pay_time'      => strtotime($_POST['gmt_payment']), //支付时间
+                // 'plat_oid'      => $_POST['trade_no'],      //支付宝订单号
+                // 'plat'          => 1,      //平台编号 1支付宝 2微信 
+            ];
+            DB::table('order')->where(['order_id'=>$oid])->update($info);
+        }
+        //处理订单逻辑
+        $this->dealOrder($_POST);
         echo 'success';
     }
     //验签
-  function verify($params) {
+    function verify($params) {
         $sign = $params['sign'];
         $params['sign_type'] = null;
         $params['sign'] = null;
