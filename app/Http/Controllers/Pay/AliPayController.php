@@ -21,10 +21,8 @@ class AliPayController extends Controller
         $this->app_id = '2016092900622330';
         $this->gate_way = 'https://openapi.alipaydev.com/gateway.do';
         $this->notify_url = env('APP_URL').'/notify_url';
-        $this->return_url = env('APP_URL').'/return_url    }';
-
-    
-    
+        $this->return_url = env('APP_URL').'/return_url';    
+    }
     /**
      * 订单支付
      * @param $oid
@@ -223,7 +221,7 @@ class AliPayController extends Controller
         echo 'success';
     }
     //验签
-    function verify($params) {
+  function verify($params) {
         $sign = $params['sign'];
         $params['sign_type'] = null;
         $params['sign'] = null;
@@ -243,11 +241,12 @@ class AliPayController extends Controller
        
         
         //转换为openssl格式密钥
-        $res = openssl_get_publickey($pubKey);
         ($res) or die('支付宝RSA公钥错误。请检查公钥文件格式是否正确');
         //调用openssl内置方法验签，返回bool值
-        $result = (openssl_verify($this->getSignContent($params), base64_decode($sign), $res, OPENSSL_ALGO_SHA256)===1);
-        openssl_free_key($res);
+        $result = (bool)openssl_verify($this->getSignContent($params), base64_decode($sign), $res, OPENSSL_ALGO_SHA256);
+        if(!$this->checkEmpty($this->aliPubKey)){
+            openssl_free_key($res);
+        }
         return $result;
     }
     /**

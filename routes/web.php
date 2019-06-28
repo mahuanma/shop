@@ -56,9 +56,10 @@ Route::middleware(['myshoplogin'])->group(function () {
 	Route::get('/index/cart','index\add@cart');
 	Route::get('/index/cartlist','index\add@cartlist');
 	Route::get('/index/order','index\add@order');
-	Route::get('/index/orderlist','index\add@orderlist');
+	
 	Route::get('/index/orderdata','index\add@orderdata');
 	});
+Route::get('/index/orderlist','index\add@orderlist');
 Route::get('/index/zhuce','index\zhuce@zhuce');
 Route::any('/index/dozhuce','index\zhuce@dozhuce');
 Route::get('/index/login','index\zhuce@login');
