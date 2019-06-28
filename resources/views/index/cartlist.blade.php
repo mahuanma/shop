@@ -15,7 +15,7 @@
 							<h5>商品图片</h5>
 						</div>
 						<div class="col s7">
-							<img src="{{$v->goods_pic}}" alt="">
+							<img src="{{asset($v->goods_pic)}}" alt="">
 						</div>
 					</div>
 					<div class="row">
